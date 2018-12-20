@@ -11,7 +11,10 @@ namespace BroadCastChatt
 {
     class Program
     {
-
+        public static string GetTimestamp(DateTime value)
+        {
+            return value.ToString("yyyy-MM-dd/HH-mm ");
+        }
         private const int ListenPort = 11000;
         static void Main(string[] args)
         {
@@ -43,20 +46,32 @@ namespace BroadCastChatt
         {
             //Skapar ett objekt som ska lyssna efter meddelanden
             UdpClient listener = new UdpClient(ListenPort);
+            string timeStamp = GetTimestamp(DateTime.Now);
+
             
+            string myIP = "192.168.80.45";
+
             try
             {
                 while (true)
                 {
-
+                    
                     //Skapar objekt som lyssnar efter trafik från valfri ip-address men via port
                     IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, ListenPort);
 
                     //Tar emot meddelande i en array
                     byte[] bytes = listener.Receive(ref groupEP);
+                   string grupp = groupEP.ToString();
+                    if (myIP != grupp)
+
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+
+                    }
+                    Console.ForegroundColor = ConsoleColor.White;
 
                     //Skrivet ut meddelandet
-                    Console.WriteLine("Received broadcast from {0} : {1}\n", groupEP.ToString(), Encoding.UTF8.GetString(bytes, 0, bytes.Length));
+                    Console.WriteLine(timeStamp + "Received broadcast from {0} : {1}\n", groupEP.ToString(), Encoding.UTF8.GetString(bytes, 0, bytes.Length));
 
                 }
             }
